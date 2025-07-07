@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())  // @id уникальный идентификатор
+  fullName String
+  email String @unique
+  password String
+  role UserRole @default(USER)
+  verified Boolean @default(false)
+
+  provider String?
+  providerId String?
+
+  varificationCode VerificationCode?
+  cart Cart?
+  orders Order[]
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Category {
+  id String @id @default(uuid())
+  name String @unique
+  products Product[] // one to many 
+}
+
+model Product {
+  id String @id @default(uuid()) 
+  name String
+  imageUrl String
+
+  ingredients Ingredient[] // many to many
+  variations VariantProduct[]
+
+  category Category @relation(fields: [categoryid], references: [id])
+  categoryid String // one to many 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ingredient {
+  id String @id @default(uuid())
+  name String
+  price Int
+  imageUrl String
+
+  products Product[] // many to many
+  cartItems CartProduct[] // many to many
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model VariantProduct {
+   id String @id @default(uuid())
+   
+   price Int
+   sizePizza Int? // 30cm
+   sizeDough Int? // Тонкое тесто
+
+   cartItems CartProduct[]
+
+   product Product @relation(fields: [productid], references: [id])
+    productid String // one to many 
+}
+
+
+model Cart {
+  id String @id @default(uuid())
+
+  user User? @relation(fields: [userid], references: [id])
+  userid String? @unique
+
+  cartItems CartProduct[]
+
+  token String
+
+  totalAmount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartProduct {
+  id String @id @default(uuid())
+  
+  variant VariantProduct @relation(fields: [variantid], references: [id])
+  variantid String // one to many 
+
+  cart Cart @relation(fields: [id], references: [id])
+  cartid String
+
+  countProduct Int
+  sizePizza Int? // 30cm
+  sizeDough Int? // Тонкое тесто
+
+  ingredients Ingredient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Order {
+  id String @id @default(uuid())
+  
+  user User? @relation(fields: [userid], references: [id])
+  userid String?
+
+  token String
+
+  totalAmount Int
+  status StatusOrder
+  paymentId String? // id сервисов онлайн оплаты юмани
+
+  items Json
+
+  fullName String
+  email String
+  phone String
+  address String
+  comment String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationCode {
+  id String @id @default(uuid())
+
+  user User @relation(fields: [userid], references: [id])
+  userid String @unique
+
+  code String @unique
+
+  createdAt DateTime @default(now())
+
+  @@unique([userid, code])
+}
+
+enum StatusOrder {
+  PENDING
+  SUCCESS
+  REJECTED
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}

@@ -1,12 +1,13 @@
-import { FilterCheckbox, Title, CheckboxFiltersGroup } from '@/components/shared';
-import { Input, RangeSlider } from '../ui';
+import { FilterCheckbox, Title, CheckboxFiltersGroup } from '@/components/shared'
+import { Input, RangeSlider } from '../ui'
+import { cn } from './cn'
 interface Props {
-  className?: string;
+  className?: string
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
   return (
-    <div className={className}>
+    <div className={cn('sticky top-[7rem]', className)}>
       <Title text="Фильтрация" size="sm" className="mb-5 font-bold" />
 
       <div className="flex flex-col gap-4">
@@ -30,60 +31,60 @@ export const Filters: React.FC<Props> = ({ className }) => {
         defaultItems={[
           {
             text: 'Сырный соус',
-            value: '1',
+            value: '1'
           },
           {
             text: 'Моццарелла',
-            value: '2',
+            value: '2'
           },
           {
             text: 'Чеснок',
-            value: '3',
+            value: '3'
           },
           {
             text: 'Солённые огурчики',
-            value: '4',
+            value: '4'
           },
           {
             text: 'Красный лук',
-            value: '5',
+            value: '5'
           },
           {
             text: 'Томаты',
-            value: '6',
-          },
+            value: '6'
+          }
         ]}
         items={[
           {
             text: 'Сырный соус',
-            value: '1',
+            value: '1'
           },
           {
             text: 'Моццарелла',
-            value: '2',
+            value: '2'
           },
           {
             text: 'Чеснок',
-            value: '3',
+            value: '3'
           },
           {
             text: 'Солённые огурчики',
-            value: '4',
+            value: '4'
           },
           {
             text: 'Красный лук',
-            value: '5',
+            value: '5'
           },
           {
             text: 'Томаты',
-            value: '6',
+            value: '6'
           },
           {
             text: 'Халапенью',
-            value: '7',
-          },
+            value: '7'
+          }
         ]}
       />
     </div>
-  );
-};
+  )
+}

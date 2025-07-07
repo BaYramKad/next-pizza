@@ -1,22 +1,23 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { useSet } from 'react-use';
+import React, { useState } from 'react'
+import { useSet } from 'react-use'
 
-import { FilterCheckbox, FilterChecboxProps } from './filter-checkbox';
-import { Input } from '../ui/input';
+import { FilterCheckbox, FilterChecboxProps } from './filter-checkbox'
+import { Input } from '../ui/input'
+import { cn } from './cn'
 
-type Item = FilterChecboxProps;
+type Item = FilterChecboxProps
 
 interface Props {
-  title: string;
-  items: Item[];
-  defaultItems: Item[];
-  limit?: number;
-  searchInputPlaceholder?: string;
-  className?: string;
-  onChange?: (values: string[]) => void;
-  defaultValue?: string[];
+  title: string
+  items: Item[]
+  defaultItems: Item[]
+  limit?: number
+  searchInputPlaceholder?: string
+  className?: string
+  onChange?: (values: string[]) => void
+  defaultValue?: string[]
 }
 
 export const CheckboxFiltersGroup: React.FC<Props> = ({
@@ -25,17 +26,15 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
   defaultItems,
   limit = 5,
   searchInputPlaceholder = 'Поиск...',
-  className,
-  onChange,
-  defaultValue,
+  className
 }) => {
-  const [showAll, setShowAll] = React.useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const [selected, { add, toggle }] = useSet<string>(new Set([]));
+  const [showAll, setShowAll] = React.useState(false)
+  const [searchValue, setSearchValue] = useState('')
+  const [selected, { toggle }] = useSet<string>(new Set([]))
 
   const onCheckedChange = (value: string) => {
-    toggle(value);
-  };
+    toggle(value)
+  }
 
   //   React.useEffect(() => {
   //     if (defaultValue) {
@@ -48,14 +47,14 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
   //   }, [selected, onChange]);
 
   const handleSearchIng = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  };
+    setSearchValue(e.target.value)
+  }
 
   const list = showAll
     ? items.filter(val => val.text.toLowerCase().includes(searchValue.toLocaleLowerCase()))
-    : defaultItems.slice(0, limit);
+    : defaultItems.slice(0, limit)
   return (
-    <div className={className}>
+    <div className={cn('', className)}>
       <p className="font-bold mb-3">{title}</p>
 
       {showAll && (
@@ -90,5 +89,5 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
