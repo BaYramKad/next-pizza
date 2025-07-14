@@ -2,45 +2,71 @@
 
 import { cn } from './cn'
 import { useCategory } from '@/store/categoty-zus'
-import Link from 'next/link'
-import React from 'react'
+import React, { useRef, useState } from 'react'
+import { Button } from '../ui'
+import { RenderLink } from './render-category'
+import { useClickAway } from 'react-use'
+import { Category } from '@prisma/client'
 
-interface CategoriesI {
-  id: string
-  name: string
-}
 interface Props {
   className?: string
-  categories: CategoriesI[]
+  categories: Category[]
 }
 
-// const cats = [
-//   { name: 'Пиццы', id: 1 },
-//   { name: 'Комбо', id: 2 },
-//   { name: 'Закуски', id: 3 },
-//   { name: 'Коктейли', id: 4 },
-//   { name: 'Кофе', id: 5 },
-//   { name: 'Напитки', id: 6 },
-//   { name: 'Десерты', id: 7 }
-// ]
+interface ShowMoreCategory {
+  isMore: boolean
+  moreCategories?: Category[]
+}
+
+const maxViewCatigories = 5
 
 export const Categories: React.FC<Props> = ({ className, categories }) => {
+  const [showMoreCategories, setMoreCategories] = useState<ShowMoreCategory>({
+    isMore: false,
+    moreCategories: []
+  })
+
+  const ref = useRef(null)
+
+  useClickAway(ref, () =>
+    setMoreCategories({
+      isMore: false
+    })
+  )
   const activeCategory = useCategory(state => state.activeId)
+  const isMoreThanMaxView = categories.length > maxViewCatigories
 
   return (
-    <div className={cn('inline-flex gap-1 bg-gray-50 p-1 rounded-2xl', className)}>
-      {categories.map(item => (
-        <Link
-          key={item.id}
-          className={cn(
-            'flex items-center font-bold h-11 rounded-2xl px-5',
-            activeCategory === item.id && 'bg-white shadow-md shadow-gray-200 text-primary'
-          )}
-          href={`/#${item.id}`}
-        >
-          {item.name}
-        </Link>
+    <div className={cn('flex flex-wrap gap-1 bg-gray-100 p-1 rounded-2xl items-center', className)}>
+      {categories.slice(0, maxViewCatigories).map(item => (
+        <RenderLink key={item.id} {...item} activeCategory={activeCategory} />
       ))}
+
+      {isMoreThanMaxView && (
+        <>
+          <Button
+            onClick={() =>
+              setMoreCategories({
+                moreCategories: categories.slice(maxViewCatigories),
+                isMore: !showMoreCategories.isMore
+              })
+            }
+          >
+            <span>Больше</span>
+
+            {showMoreCategories.isMore && (
+              <ul
+                ref={ref}
+                className="absolute top-[80%] flex flex-col text-black gap-1 items-center justify-center bg-gray-100 p-1 rounded-2xl"
+              >
+                {showMoreCategories.moreCategories?.map(item => {
+                  return <RenderLink key={item.id} {...item} activeCategory={activeCategory} />
+                })}
+              </ul>
+            )}
+          </Button>
+        </>
+      )}
     </div>
   )
 }

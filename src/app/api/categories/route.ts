@@ -4,7 +4,7 @@ import { prisma } from '../../../../prisma/prisma-client'
 export const POST = async (request: NextRequest) => {
   const data = await request.json()
 
-  const result = await prisma.user.create({ data })
+  const result = await prisma.category.createMany({ data })
 
   return Response.json({ result })
 }

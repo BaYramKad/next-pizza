@@ -7,20 +7,26 @@ import { ProductCardT } from '@/types/product-types'
 import Image from 'next/image'
 
 export const ProductCard: React.FC<ProductCardT> = ({
-  id,
   name,
   price,
   count,
   imageUrl,
   className
 }) => {
-  console.log(id)
   return (
-    <div className={cn(className)}>
-      <div className="flex justify-center p-6 bg-secondary rounded-lg h-[260px]">
-        {/* <img className="w-[215px] h-[215px]" src={imageUrl} alt="Logo" /> */}
-        <Image src={imageUrl} alt="logo" width={215} height={215} />
-      </div>
+    <div
+      className={cn(
+        'grid border-2 border-primary/10 transition-all hover:border-primary p-5 rounded-2xl cursor-pointer',
+        className
+      )}
+    >
+      <Image
+        src={imageUrl}
+        alt="logo"
+        width={215}
+        height={215}
+        className="m-auto bg-primary-500/20 p-5 rounded-2xl"
+      />
       <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
       <p className="text-sm text-gray-400">
         Цыпленок, моцарелла, сыры чеддер и пармезан, сырный соус, томаты, соус альфредо, чеснок

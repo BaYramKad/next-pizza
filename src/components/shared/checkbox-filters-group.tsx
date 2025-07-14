@@ -3,16 +3,26 @@
 import React, { useState } from 'react'
 import { useSet } from 'react-use'
 
-import { FilterCheckbox, FilterChecboxProps } from './filter-checkbox'
+import { FilterCheckbox } from './filter-checkbox'
 import { Input } from '../ui/input'
 import { cn } from './cn'
+import Image from 'next/image'
 
-type Item = FilterChecboxProps
+// type Item = FilterChecboxProps
+
+type Ing = {
+  name: string
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  price: number
+  imageUrl: string
+}
 
 interface Props {
   title: string
-  items: Item[]
-  defaultItems: Item[]
+  items: Ing[]
+  defaultItems: Ing[]
   limit?: number
   searchInputPlaceholder?: string
   className?: string
@@ -23,7 +33,6 @@ interface Props {
 export const CheckboxFiltersGroup: React.FC<Props> = ({
   title,
   items,
-  defaultItems,
   limit = 5,
   searchInputPlaceholder = 'Поиск...',
   className
@@ -32,27 +41,17 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
   const [searchValue, setSearchValue] = useState('')
   const [selected, { toggle }] = useSet<string>(new Set([]))
 
-  const onCheckedChange = (value: string) => {
-    toggle(value)
+  const onCheckedChange = (id: string) => {
+    toggle(id)
   }
-
-  //   React.useEffect(() => {
-  //     if (defaultValue) {
-  //       defaultValue.forEach(add);
-  //     }
-  //   }, [defaultValue?.length, add, defaultValue]);
-
-  //   React.useEffect(() => {
-  //     onChange?.(Array.from(selected));
-  //   }, [selected, onChange]);
 
   const handleSearchIng = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value)
   }
 
   const list = showAll
-    ? items.filter(val => val.text.toLowerCase().includes(searchValue.toLocaleLowerCase()))
-    : defaultItems.slice(0, limit)
+    ? items.filter(val => val.name.toLowerCase().includes(searchValue.toLocaleLowerCase()))
+    : items.slice(0, limit)
   return (
     <div className={cn('', className)}>
       <p className="font-bold mb-3">{title}</p>
@@ -67,23 +66,23 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
         </div>
       )}
 
-      <div className="flex flex-col gap-4 max-h-96 pr-2 overflow-auto scrollbar">
+      <div className={`flex flex-col gap-4 pr-2 overflow-auto scrollbar ${showAll && 'h-[300px]'}`}>
         {!list.length && <span>Нет такого</span>}
         {list.map(item => (
           <FilterCheckbox
-            onCheckedChange={() => onCheckedChange(item.value)}
-            checked={selected.has(item.value)}
-            key={String(item.value)}
-            value={item.value}
-            text={item.text}
-            endAdornment={item.endAdornment}
+            onCheckedChange={() => onCheckedChange(item.id)}
+            checked={selected.has(item.id)}
+            key={item.id}
+            value={item.id}
+            text={item.name}
+            endAdornment={<Image src={item.imageUrl} width={15} height={15} alt={item.name} />}
           />
         ))}
       </div>
 
       {items.length > limit && (
         <div className={showAll ? 'border-t border-t-neutral-100 mt-4' : ''}>
-          <button onClick={() => setShowAll(!showAll)} className="text-primary mt-3">
+          <button onClick={() => setShowAll(!showAll)} className="text-primary mt-3 cursor-pointer">
             {showAll ? 'Скрыть' : '+ Показать все'}
           </button>
         </div>
