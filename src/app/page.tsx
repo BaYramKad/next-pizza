@@ -1,4 +1,5 @@
-import { Container, Filters, Title, TopBar, ProductsGroupList } from '@/components/shared'
+import { Container, Title, TopBar, ProductsGroupList } from '@/components/shared'
+import { FiltersContainer } from '@/components/shared/filters-container'
 import { getAllProducts } from '@/components/shared/services/alt-product'
 // import { ProductCardT } from '@/types/product-types'
 
@@ -41,7 +42,7 @@ export default async function Home() {
       <Container className="pb-14 mt-6">
         <div className="flex gap-[60px]">
           <div className="w-[250px]">
-            <Filters />
+            <FiltersContainer />
           </div>
           <div className="flex-1">
             <ProductsGroupList items={pizzas} title="Пиццы" productId={1} />

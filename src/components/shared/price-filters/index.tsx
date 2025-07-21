@@ -1,27 +1,21 @@
 'use client'
 import { Input, RangeSlider } from '@/components/ui'
-import { useState } from 'react'
-
-type Prices = {
-  priceFrom: number
-  priceTo: number
-}
-
-const initialPrices = {
-  priceFrom: 0,
-  priceTo: 800
-}
+import { Prices } from '../filters'
 
 const minPrice = 0
 const maxPrice = 800
 
-export const PriceFilters = () => {
-  const [prices, setPrices] = useState<Prices>(initialPrices)
+type PriceFilterProps = {
+  prices: Prices
+  handleSelectPrices: (type: keyof Prices, price: string) => void
+  updateRangePrices: (prevFrom: number, prevTo: number) => void
+}
 
-  const updatePrice = (type: keyof Prices, price: string) => {
-    setPrices({ ...prices, [type]: price })
-  }
-
+export const PriceFilters = ({
+  prices,
+  handleSelectPrices,
+  updateRangePrices
+}: PriceFilterProps) => {
   return (
     <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
       <p className="font-bold mb-3">Цена от и до:</p>
@@ -31,16 +25,16 @@ export const PriceFilters = () => {
           placeholder="0"
           min={minPrice}
           max={maxPrice}
-          defaultValue={prices.priceFrom}
-          onChange={e => updatePrice('priceFrom', e.target.value)}
+          value={String(prices.priceFrom)}
+          onChange={e => handleSelectPrices('priceFrom', e.target.value)}
         />
         <Input
           type="number"
           placeholder="800"
           min={minPrice}
           max={maxPrice}
-          defaultValue={prices.priceTo}
-          onChange={e => updatePrice('priceTo', e.target.value)}
+          value={String(prices.priceTo)}
+          onChange={e => handleSelectPrices('priceTo', e.target.value)}
         />
       </div>
       <RangeSlider
@@ -48,11 +42,8 @@ export const PriceFilters = () => {
         max={maxPrice}
         step={10}
         value={[prices.priceFrom, prices.priceTo]}
-        onValueChange={([prevFrom, prevTo]) => {
-          setPrices({
-            priceFrom: prevFrom,
-            priceTo: prevTo
-          })
+        onValueChange={([from, to]) => {
+          updateRangePrices(from, to)
         }}
       />
     </div>
